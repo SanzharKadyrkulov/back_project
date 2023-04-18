@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { ACTIONS, BASE_URL } from "../utils/consts";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const authContext = createContext();
 
@@ -24,6 +25,7 @@ function reducer(state, action) {
 
 function AuthContext({ children }) {
 	const [state, dispatch] = useReducer(reducer, initialState);
+	const navigate = useNavigate();
 
 	async function register(credential) {
 		try {
@@ -33,9 +35,29 @@ function AuthContext({ children }) {
 		}
 	}
 
+	async function login(credentials) {
+		try {
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function activateUser(uid, token) {
+		try {
+			await axios.post(`${BASE_URL}/auth/users/activation/`, {
+				uid,
+				token,
+			});
+			navigate("/auth");
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	const value = {
 		user: state.user,
 		register,
+		activateUser,
 	};
 	return <authContext.Provider value={value}>{children}</authContext.Provider>;
 }
