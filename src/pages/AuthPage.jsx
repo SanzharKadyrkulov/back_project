@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useAuthContext } from "../contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 function Copyright(props) {
 	return (
@@ -36,17 +37,20 @@ const theme = createTheme();
 
 const AuthPage = () => {
 	const [isLogin, setIsLogin] = React.useState(true);
-	const { register } = useAuthContext();
+	const { register, login, user } = useAuthContext();
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
 		if (isLogin) {
-			console.log(...data, "login");
+			login(data);
 		} else {
-			register(data)
-			console.log(...data, "register");
+			register(data);
 		}
 	};
+
+	if (user) {
+		return <Navigate replace to="/" />;
+	}
 
 	return (
 		<ThemeProvider theme={theme}>

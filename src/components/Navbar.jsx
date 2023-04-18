@@ -7,8 +7,11 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 export default function ButtonAppBar() {
+	const { user, logout } = useAuthContext();
+
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static">
@@ -25,7 +28,15 @@ export default function ButtonAppBar() {
 					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
 						News
 					</Typography>
-					<Button component={Link} to='/auth' color="inherit">Login</Button>
+					{user ? (
+						<Button onClick={() => logout()} color="inherit">
+							Logout
+						</Button>
+					) : (
+						<Button component={Link} to="/auth" color="inherit">
+							Login
+						</Button>
+					)}
 				</Toolbar>
 			</AppBar>
 		</Box>

@@ -37,6 +37,55 @@ function AuthContext({ children }) {
 
 	async function login(credentials) {
 		try {
+			const { data: tokens } = await axios.post(
+				`${BASE_URL}/auth/jwt/create/`,
+				credentials
+			);
+			localStorage.setItem("tokens", JSON.stringify(tokens));
+
+			const { data } = await axios.get(`${BASE_URL}/auth/users/me/`, {
+				headers: {
+					Authorization: `Bearer ${tokens.access}`,
+				},
+			});
+
+			dispatch({
+				type: ACTIONS.user,
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	function logout() {
+		localStorage.removeItem("tokens");
+		dispatch({
+			type: ACTIONS.user,
+			payload: null,
+		});
+	}
+
+	async function checkAuth() {
+		try {
+			const tokens = JSON.parse(localStorage.getItem("tokens"));
+			if (tokens) {
+				const { data } = await axios.get(`${BASE_URL}/auth/users/me/`, {
+					headers: {
+						Authorization: `Bearer ${tokens.access}`,
+					},
+				});
+
+				dispatch({
+					type: ACTIONS.user,
+					payload: data,
+				});
+			} else {
+				dispatch({
+					type: ACTIONS.user,
+					payload: null,
+				});
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -57,7 +106,10 @@ function AuthContext({ children }) {
 	const value = {
 		user: state.user,
 		register,
+		login,
 		activateUser,
+		logout,
+		checkAuth,
 	};
 	return <authContext.Provider value={value}>{children}</authContext.Provider>;
 }
