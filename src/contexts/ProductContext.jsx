@@ -28,6 +28,59 @@ function reducer(state, action) {
 function ProductContext({ children }) {
 	const [state, dispatch] = useReducer(reducer, initState);
 
+	async function getProducts() {
+		try {
+			const { data } = await $axios.get(`${BASE_URL}/product/`);
+			console.log(data);
+			dispatch({
+				type: ACTIONS.products,
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function addProduct(newProd) {
+		try {
+			await $axios.post(`${BASE_URL}/product/`, newProd);
+			getProducts();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function deleteProduct(slug) {
+		try {
+			await $axios.delete(`${BASE_URL}/product/${slug}/`);
+			getProducts();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function getCategories() {
+		try {
+			const { data } = await $axios.get(`${BASE_URL}/category/`);
+			dispatch({
+				type: ACTIONS.categories,
+				payload: data,
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	const value = {
+		products: state.products,
+		oneProduct: state.oneProduct,
+		categories: state.categories,
+		getProducts,
+		addProduct,
+		getCategories,
+		deleteProduct,
+	};
+
 	return (
 		<productContext.Provider value={value}>{children}</productContext.Provider>
 	);
