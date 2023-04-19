@@ -25,9 +25,14 @@ export default function ButtonAppBar() {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-						News
+					<Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1 }}>
+						Home
 					</Typography>
+
+					<Button component={Link} to="/add" color="inherit">
+						Add
+					</Button>
+
 					{user ? (
 						<Button onClick={() => logout()} color="inherit">
 							Logout

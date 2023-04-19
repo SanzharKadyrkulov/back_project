@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer } from "react";
 import { ACTIONS, BASE_URL } from "../utils/consts";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import $axios from "../utils/axios";
 
 const authContext = createContext();
 
@@ -43,11 +44,7 @@ function AuthContext({ children }) {
 			);
 			localStorage.setItem("tokens", JSON.stringify(tokens));
 
-			const { data } = await axios.get(`${BASE_URL}/auth/users/me/`, {
-				headers: {
-					Authorization: `Bearer ${tokens.access}`,
-				},
-			});
+			const { data } = await $axios.get(`${BASE_URL}/auth/users/me/`);
 
 			dispatch({
 				type: ACTIONS.user,
@@ -70,11 +67,7 @@ function AuthContext({ children }) {
 		try {
 			const tokens = JSON.parse(localStorage.getItem("tokens"));
 			if (tokens) {
-				const { data } = await axios.get(`${BASE_URL}/auth/users/me/`, {
-					headers: {
-						Authorization: `Bearer ${tokens.access}`,
-					},
-				});
+				const { data } = await $axios.get(`${BASE_URL}/auth/users/me/`);
 
 				dispatch({
 					type: ACTIONS.user,
