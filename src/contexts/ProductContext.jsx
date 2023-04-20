@@ -7,6 +7,7 @@ export const productContext = createContext();
 export function useProductContext() {
 	return useContext(productContext);
 }
+
 const initState = {
 	products: [],
 	oneProduct: null,
@@ -25,6 +26,7 @@ function reducer(state, action) {
 			return state;
 	}
 }
+
 function ProductContext({ children }) {
 	const [state, dispatch] = useReducer(reducer, initState);
 
@@ -34,7 +36,7 @@ function ProductContext({ children }) {
 			console.log(data);
 			dispatch({
 				type: ACTIONS.products,
-				payload: data,
+				payload: data.results,
 			});
 		} catch (error) {
 			console.log(error);
@@ -64,7 +66,7 @@ function ProductContext({ children }) {
 			const { data } = await $axios.get(`${BASE_URL}/category/`);
 			dispatch({
 				type: ACTIONS.categories,
-				payload: data,
+				payload: data.results,
 			});
 		} catch (error) {
 			console.log(error);
