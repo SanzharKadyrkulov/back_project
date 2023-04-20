@@ -5,4 +5,5 @@ export const ACTIONS = {
 	products: "products",
 	categories: "categories",
 	oneProduct: "oneProduct",
+	pageTotalCount: "pageTotalCount",
 };

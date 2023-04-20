@@ -8,20 +8,45 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { productContext, useProductContext } from "../contexts/ProductContext";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const theme = createTheme();
-function AddProductPage() {
-	const { addProduct, categories, getCategories } = useProductContext();
-	const [category, setCategory] = useState("men");
+function EditProductPage() {
+	const { editProduct, categories, getCategories, oneProduct, getOneProduct } =
+		useProductContext();
+
+	const { slug } = useParams();
+
+	const [formValue, setFormValue] = useState({
+		title: "",
+		price: "",
+		description: "",
+		category: "",
+	});
 
 	useEffect(() => {
 		getCategories();
+		getOneProduct(slug);
 	}, []);
+
+	useEffect(() => {
+		if (oneProduct) {
+			setFormValue(oneProduct);
+		}
+	}, [oneProduct]);
+
+	function handleChange(e) {
+		const obj = {
+			...formValue,
+			[e.target.name]: e.target.value,
+		};
+		setFormValue(obj);
+	}
 
 	function handleSubmit(event) {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		addProduct(data);
+		editProduct(slug, data);
 	}
 	return (
 		<ThemeProvider theme={theme}>
@@ -36,7 +61,7 @@ function AddProductPage() {
 					}}
 				>
 					<Typography component="h1" variant="h5">
-						Add product
+						Edit product
 					</Typography>
 					<Box
 						component="form"
@@ -48,6 +73,8 @@ function AddProductPage() {
 							margin="normal"
 							required
 							fullWidth
+							value={formValue.title}
+							onChange={(e) => handleChange(e)}
 							id="title"
 							label="Title"
 							name="title"
@@ -57,6 +84,8 @@ function AddProductPage() {
 							margin="normal"
 							required
 							fullWidth
+							value={formValue.description}
+							onChange={(e) => handleChange(e)}
 							name="description"
 							label="Description"
 							id="description"
@@ -65,6 +94,8 @@ function AddProductPage() {
 							margin="normal"
 							required
 							fullWidth
+							value={formValue.price}
+							onChange={(e) => handleChange(e)}
 							type="number"
 							name="price"
 							label="Price"
@@ -77,8 +108,8 @@ function AddProductPage() {
 								id="category-select"
 								label="Category"
 								name="category"
-								value={category}
-								onChange={(e) => setCategory(e.target.value)}
+								value={formValue.category}
+								onChange={(e) => handleChange(e)}
 							>
 								{categories.map((item) => {
 									return (
@@ -107,7 +138,7 @@ function AddProductPage() {
 							variant="contained"
 							sx={{ mt: 3, mb: 2 }}
 						>
-							Add
+							Save
 						</Button>
 					</Box>
 				</Box>
@@ -116,4 +147,4 @@ function AddProductPage() {
 	);
 }
 
-export default AddProductPage;
+export default EditProductPage;
